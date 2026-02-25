@@ -64,7 +64,7 @@
 
 \begin{remark}
   If \( X \) is an arbitrary random variable and \( a \) is an
-  arbitrary real number then \( \exp(X) , a >0 \), and so
+  arbitrary real number then \( e^{X}, a>0 \), and so
   \[
     \mathbb{P}\left\{ \exp(X) \geq \exp(a)  \right\} \leq
     \frac{\mathbb{E}\exp(X) }{\exp(a) }
@@ -120,7 +120,8 @@
 
 \begin{remark}
   Hoeffding's inequality can be extended to cover many more types of
-  random variables other than just Radmacher-distributed ones.
+  random variables other than just Radmacher-distributed one, for
+  example bounded ones.
 \end{remark}
 
 \begin{theorem}[Chernoff's inequality]
@@ -134,6 +135,19 @@
   \]
   for all \( t \geq \mu  \).
 \end{theorem}
+
+\begin{proof}[Proof Chernoff's theorem]
+  Use the exact same strategy as in the proof of Hoeffding's inequality. Use
+  \( 1 + x \leq \exp\left(x\right)\).
+\end{proof}
+
+\begin{corollary}
+  For \( 0 \leq \delta \leq 1 \),
+  \[
+    \mathbb{P}\left\{ \left| S_n - \mu \right| \geq \delta \mu
+    \right\} \leq 2 \exp\left(- \frac{\delta^2 \mu}{3}\right).
+  \]
+\end{corollary}
 
 \begin{theorem}[Master Tail Bounds Theorem]
   Let \( X = \sum_{i=1}^{n} X_i \), where \( X_i \) are pairwise
@@ -153,9 +167,14 @@
   The volume of a unit ball in a \( d \)-dimensional space is
   \[
     \text{Vol}(\mathbb{B}^d) = \frac{\pi ^{d/2} }{\frac{d}{2} \Gamma
-    (\frac{d}{2} )}
+    (\frac{d}{2} )}.
   \]
 \end{theorem}
+
+\begin{proof}
+  Induction with respect to \( d \).
+\end{proof}
+
 \begin{corollary}
   For big \( d \), this volume is close to \( 0 \).
   Also, the volume of the ball is concentrated near the boundary.
@@ -177,6 +196,11 @@
   \end{gather*}
 \end{fact}
 
+\begin{remark}
+  The facts above tell us that the Gassian variables in \(
+  \mathbb{R}^d \) are concentrated around a sphere with radius \( \sqrt{d} \).
+\end{remark}
+
 \begin{fact}
   If \( X, Y \sim N(0, I_d) \) pairwise independent and \( \xi \in
   \mathbb{R}^d \), then
@@ -188,14 +212,6 @@
   \end{gather*}
 \end{fact}
 
-\begin{theorem}[Gaussian Annulus Theorem]
-  If \( X \sim N(0, I_d) \) and \( 0 \leq \varepsilon \leq \sqrt{d} \), then
-  \[
-    \mathbb{P}\left\{ | \|X\| - \sqrt{d} | \leq \varepsilon  \right\}
-    \geq 1 - 2 \exp\left(-\varepsilon^2 / 16\right).
-  \]
-\end{theorem}
-
 \begin{theorem}[Ortogonality of Gaussian variables]
   If \( X \sim N(0, I_d) \) and \( 0 \leq \varepsilon \), then
   \[
@@ -205,24 +221,83 @@
   \]
 \end{theorem}
 
-\begin{theorem}[Random Projection Theorem]
-  Set \( v \in \mathbb{R}^d \) and let \( f(v) = Uv \), where the
-  coefficients of \( U \) are standard and pairwise independent
-  Gaussians. Then there exists a constant \( c > 0 \) such that, for
-  \( \varepsilon \in (0,1) \),
+\begin{theorem}[Gaussian Annulus Theorem]
+  Let \( X \sim N(0, I_d) \) and \( \varepsilon \leq \sqrt{d} \). Then
   \[
-    \mathbb{P}\left\{ \left| \left| f(v) \right| - \sqrt{k} \left| v
-      \right| \right| \geq \varepsilon \sqrt{k} \left| v \right|
+    \mathbb{P}\left\{ \left| \left\|X\right\| - \sqrt{d} \right| \leq
+    \varepsilon \right\} \geq 1 - 3 \exp\left( -c \varepsilon^2\right),
+  \]
+  where \( c > 0 \) is some constant.
+\end{theorem}
+
+\begin{proof}
+  Let \( r = \left\| X \right\| \). If \( \left| r - \sqrt{d} \right|
+  \geq \varepsilon \), then \( \left| r^2 - d \right| \geq
+    \varepsilon \left( r + \sqrt{d} \right) \geq \varepsilon \sqrt{d}
+  \). So it suffices to bound the probability that \( \left| r -
+  \sqrt{d} \right| \geq \varepsilon \sqrt{d} \).
+
+  Rewrite \( r^2 - d = (X_{1}^{2} - 1) + \dots + (X_{d}^{2} - 1)\)
+  and set \( Y_i = X_{i}^{2} - 1 \). We want to bound the probability
+  that \( \left| \sum_{i=1}^{d} Y_i \right| \geq \varepsilon \sqrt{d}
+  \). Notice that \( \mathbb{E} Y_i = 0\). To apply the master
+  theorem we have to bound the moments of \( Y_i \). But that is
+  simple calculus; in the end we get \( \left| \mathbb{E} Y^{s}
+  \right| \leq 2^{s}s! \).
+  Variance of \( Y_i \) is still to high, so we set \( Z_i = Y_i / 2
+  \), then \( \operatorname{Var}(Z_i) \leq 2 \) and \( \left|
+  \mathbb{E}Z_{i}^{s} \right| \leq 2s! \). Now we can apply the
+  Master theorem for \( \sigma^2 = 2 \) and \( n = d \), which yields
+  the result.
+\end{proof}
+
+\begin{theorem}[Random Projection Theorem]
+  Set \( v \in \mathbb{R}^d \) and let \( f(v) = Uv \), where \( U
+  \in M_{n \times k}(\mathbb{R}) \) the coefficients of \( U \) are
+  standard and pairwise independent Gaussians. Then there exists a
+  constant \( c > 0 \) such that, for \( \varepsilon \in (0,1) \),
+  \[
+    \mathbb{P}\left\{ \left| \left\| f(v) \right\| - \sqrt{k} \left\| v
+      \right\| \right| \geq \varepsilon \sqrt{k} \left\| v \right\|
     \right\}  \leq 3 \exp\left(-ck \varepsilon^2\right).
   \]
 \end{theorem}
 
-\begin{theorem}[Johnson-Lindenstrauss lemma]
-  blabla
+\begin{proof}
+  By scaling the inner inequality by \( \left\| v \right\| \), we can
+  assume that \( \left\| v \right\| = 1 \). Since the sum of normal
+  variables is normal, \( \left\langle u_i, v \right\rangle \) is
+  Gaussian with zero mean and variance equal to
+  \[
+    \operatorname{Var}(\left\langle u_i, v \right\rangle) =
+    \sum_{j=1}^{d} v_{j}^{2} u_{ij} = \sum_{j=1}^{d} v_{j}^{2} = 1.
+  \]
+  Since \( \left\langle u_{i}, v \right\rangle \) for \( i=1, \dots k \) are
+  independent, Gaussian and have unit variance, the desired property
+  follows from the Gaussian Annulus Theorem.
+\end{proof}
+
+\begin{theorem}[Johnson-Lindenstrauss Lemma]
+  For any \( 0 < \varepsilon < 1 \) and any positive integer \( n \),
+  let \( k \geq \frac{3}{c \varepsilon^2} \log n \) with \( c \) as
+  in the Gaussian Annulus Theorem. For any set of \( n \) points in
+  \( \mathbb{R}^d \), the random projection \( f(v) = Uv \), where
+  \( U \) is as before, has the property that for all \( v_{i}, v_{j} \),
+  \[
+    \mathbb{P}\left\{ (1-\varepsilon) \sqrt{k} \left\|v_{i} -
+      v_{j}\right\| \leq \left\| f(v_{i}) - f(v_{j})\right\| \leq
+    (1+\varepsilon) \sqrt{k} \left\|v_{i} - v_{j}\right\| \right\} \geq 1- 3/2n.
+  \]
 \end{theorem}
 
+\begin{proof}
+  Simply use the previous result with an union bound with \(
+  \binom{n}{2} < n^{2}/2 \).
+\end{proof}
+
 \begin{fact}
-  Let \( X \) be a random vector and \( \Sigma = \mathbb{E}XX^T \). Then
+  Let \( X \) be a random vector and let \( \Sigma = \mathbb{E}XX^T
+  \) be its covariance matrix. Then
   \begin{itemize}
     \item for all \( v \in \mathbb{R}^d \), \( \mathbb{E}\left\langle
       X, v \right\rangle^2 = v^T \Sigma v \).
@@ -268,7 +343,7 @@
 \end{remark}
 
 \begin{definition}[Affine linear classificator]
-  For \( W = \left\{ (x_i, y_i) | i = 1, 2, \dots, n \right\}
+  For \( W = \left\{ (x_i, y_i) \; : \; i = 1, 2, \dots, n \right\}
   \subseteq \mathbb{R}^d \times \left\{ -1, 1 \right\} \), an
   \emph{affine linear classificator} is a function
   \[
@@ -282,19 +357,5 @@
   We will assume that \( w = \left( w_1, w_2, \dots, w_n, b \right)
   \) and \( x = \left( x_1, x_2, \dots, x_n, 1 \right) \).
 \end{remark}
-
-\usepackage{algorithm,algorithmicx,algpseudocode}
-\begin{algorithm}
-  \floatname{algorithm}{Perceptron}
-  \algrenewcommand\algorithmicrequire{\textbf{set of points}}
-  \algrenewcommand\algorithmicensure{\textbf{classificator}}
-  \caption{The Perceptron algorithm}\label{alg:}
-  \begin{algorithmic}[1]
-    \Require $input$
-    \Ensure $output$
-
-    \State \textbf{return} $state$
-  \end{algorithmic}
-\end{algorithm}
 
 \end{document}
