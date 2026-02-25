@@ -1,0 +1,300 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{empheq}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{mathtools}
+\usepackage[margin=1.5in]{geometry}
+% \usepackage[polish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\title{Data Science}
+\author{Filip Rabiega}
+
+\theoremstyle{definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{fact}{Fact}
+\newtheorem{corollary}{Corollary}
+\newtheorem{remark}{Remark}
+
+\begin{document}
+
+\maketitle
+\section{Elementary facts}
+
+\begin{definition}[Density of a Gaussian variable]
+  If \( X \sim N(\mu, \Sigma) \), then
+  \[
+    f_X (x_1, \dots, x_d) =
+    \frac{1}{\sqrt{\left( 2 \pi \right) ^{d}  \text{det}(\Sigma)}}
+    \exp\left(-\frac{1}{2}\left( x - \mu \right)^{T} \Sigma^{-1}
+    \left( x - \mu \right)\right).
+  \]
+\end{definition}
+
+\begin{theorem}[Law of large numbers, version 1]
+  If \( \operatorname{Var}(X _{i} ) < \infty \), then
+  \[
+    \mathbb{P} \left\{ | \bar{X} - \mathbb{E}X | \geq \varepsilon \right\}
+    \leq \frac{\operatorname{Var}(X)}{n\varepsilon^{2}}
+  \]
+\end{theorem}
+
+\begin{theorem}[Law of large numbers, version 2]
+  If \( \operatorname{Var}(X) < \infty  \), then
+  \[
+    \sqrt{n} \left( \bar{X} - \mathbb{E}X \right)
+    \xrightarrow{\mathcal{D} } N(0,\sigma ^{2} ).
+  \]
+\end{theorem}
+
+\begin{theorem}[Markov's inequality]
+  If \( X \) is a nonnegative random variable and \( a > 0 \), then
+  \[
+    \mathbb{P}\left\{ X \geq a \right\} \leq \frac{\mathbb{E}X}{a} .
+  \]
+\end{theorem}
+
+\begin{remark}
+  If \( X \) is an arbitrary random variable and \( a \) is an
+  arbitrary real number then \( \exp(X) , a >0 \), and so
+  \[
+    \mathbb{P}\left\{ \exp(X) \geq \exp(a)  \right\} \leq
+    \frac{\mathbb{E}\exp(X) }{\exp(a) }
+  \]
+  by Markov's inequality.
+\end{remark}
+
+\begin{theorem}[Chebyshev's inequality]
+  If \( a>0 \), then
+  \[
+    \mathbb{P}\left\{ | X - \mathbb{E}X | \geq a \right\} \leq
+    \frac{\operatorname{Var}(X)}{a^2} .
+  \]
+\end{theorem}
+
+\begin{theorem}[Hoeffding's inequality]
+  Let \( X_i \) be pairwise independent Rademacher random variables
+  and set \( a \in \mathbb{R}^d \).
+  Then, for all \( t \geq 0 \),
+  \[
+    \mathbb{P}\left\{ \sum_{i=1}^{n} a_i X_i \geq t \right\} \leq
+    \exp\left(-\frac{t^2}{2 \|a\|^{2}} \right).
+  \]
+\end{theorem}
+
+\begin{proof}
+  Set \( \lambda \geq 0 \). From Markov's inequality,
+  \[ \mathbb{P}\left\{ \sum_{i=1}^{n} a_i X_i \geq t \right\} =
+    \mathbb{P}\left\{ \exp\left( \lambda \sum_{i=1}^{n} a_i X_i \right) \geq
+    \exp\left( \lambda t\right) \right\} \leq \exp\left(-\lambda t\right)
+  \mathbb{E}\exp\left(\lambda \sum_{i=1}^{n} a_i X_i\right).\]
+  Now we choose shall choose a value of \( \lambda \) that minimizes
+  the right hand site. Notice that
+  \[
+    \mathbb{E} \exp\left(\lambda \sum_{i=1}^{n} a_i X_i\right) =
+    \prod_{i=1}^{n} \mathbb{E}\exp\left(\lambda a_i X_i\right).
+  \]
+  Since \( X_i \) are all Radmacher-distributed, \( \mathbb{E}
+  \exp\left( \lambda a_i X_i \right) = \cosh(\lambda a_i) \) by
+  simple calculations.
+  Now \( \cosh(x) \leq \exp\left(x^2 / 2\right) \), so \(
+    \mathbb{E}\exp\left(\lambda a_i X_i\right) \leq \exp\left(
+  \lambda^2 a_{i}^{2} / 2\right) \).
+  Altogether
+  \[
+    \mathbb{P}\left\{ \sum_{i=1}^{n} a_i X_i \right\} \leq \exp\left(
+    -\lambda t + \frac{\lambda^2}{2} \sum_{i=1}^{n} a_i ^2\right) =
+    \exp\left(-\lambda t + \frac{\lambda^2}{2} \left\|a\right\|^2\right).
+  \]
+  The minimum is achieved for \( \lambda =
+  \frac{t}{\left\|a\right\|^2} \). Then we get the desired inequality.
+\end{proof}
+
+\begin{remark}
+  Hoeffding's inequality can be extended to cover many more types of
+  random variables other than just Radmacher-distributed ones.
+\end{remark}
+
+\begin{theorem}[Chernoff's inequality]
+  Let \( X_i \) be independent Bernoulli trials with \(
+  \mathbb{P}\left\{ X_i = 1 \right\} = p_i \).
+  Let \( S_n = \sum_{i=i}^{n} X_i \) and \( \mu = \mathbb{E}S_n \).
+  Then
+  \[
+    \mathbb{P}\left\{ S_n \geq t \right\} \leq \exp(- \mu) \left(
+    \frac{e \mu}{t}  \right) ^{t}
+  \]
+  for all \( t \geq \mu  \).
+\end{theorem}
+
+\begin{theorem}[Master Tail Bounds Theorem]
+  Let \( X = \sum_{i=1}^{n} X_i \), where \( X_i \) are pairwise
+  independent and have zero mean and variance at most \( \sigma ^{2}
+  \). Let \( 0 \leq a \leq \sqrt{2}n \sigma ^{2} \). Assume that \( |
+  \mathbb{E}X ^{s} _{i} | \leq \sigma ^{2} s! \) for \( s = 3, 4,
+  \dots , \lfloor \frac{a^2}{4n \sigma^2} \rfloor \).
+  Then
+  \[
+    \mathbb{P}\left\{ | X | \geq a \right\} \leq 3 \exp\left(-a^2 /
+    12n \sigma^2 \right).
+  \]
+\end{theorem}
+
+\section{Geometry in high-dimensional spaces}
+\begin{theorem}
+  The volume of a unit ball in a \( d \)-dimensional space is
+  \[
+    \text{Vol}(\mathbb{B}^d) = \frac{\pi ^{d/2} }{\frac{d}{2} \Gamma
+    (\frac{d}{2} )}
+  \]
+\end{theorem}
+\begin{corollary}
+  For big \( d \), this volume is close to \( 0 \).
+  Also, the volume of the ball is concentrated near the boundary.
+\end{corollary}
+
+\begin{fact}
+  If \( X \sim N(0, I_d) \), then
+  \begin{gather*}
+    \mathbb{E} \|X\|^{2} = d, \\
+    \operatorname{Var}(\|X\|^2) = 2d.
+  \end{gather*}
+\end{fact}
+
+\begin{fact}
+  If \( X \sim N(0, I_d) \), then
+  \begin{gather*}
+    \left| \mathbb{E}\left( \|X\| - \sqrt{d} \right) \right| \leq 1/\sqrt{d}, \\
+    \operatorname{Var}(\|X\|) \leq 2.
+  \end{gather*}
+\end{fact}
+
+\begin{fact}
+  If \( X, Y \sim N(0, I_d) \) pairwise independent and \( \xi \in
+  \mathbb{R}^d \), then
+  \begin{gather*}
+    \mathbb{E}\langle X, Y \rangle = 0, \\
+    \operatorname{Var}(\langle X, Y \rangle) = d, \\
+    \mathbb{E}\langle X, \xi \rangle = 0, \\
+    \operatorname{Var}(\langle X, \xi \rangle) = \|\xi\|^{2}.
+  \end{gather*}
+\end{fact}
+
+\begin{theorem}[Gaussian Annulus Theorem]
+  If \( X \sim N(0, I_d) \) and \( 0 \leq \varepsilon \leq \sqrt{d} \), then
+  \[
+    \mathbb{P}\left\{ | \|X\| - \sqrt{d} | \leq \varepsilon  \right\}
+    \geq 1 - 2 \exp\left(-\varepsilon^2 / 16\right).
+  \]
+\end{theorem}
+
+\begin{theorem}[Ortogonality of Gaussian variables]
+  If \( X \sim N(0, I_d) \) and \( 0 \leq \varepsilon \), then
+  \[
+    \mathbb{P}\left\{ \left| \left\langle \frac{X}{\|X\|}, \frac{Y}{\|Y\|}
+    \right\rangle \right| \leq \varepsilon \right\} \geq 1 - \frac{2 /
+    \varepsilon + 7}{\sqrt{d}}.
+  \]
+\end{theorem}
+
+\begin{theorem}[Random Projection Theorem]
+  Set \( v \in \mathbb{R}^d \) and let \( f(v) = Uv \), where the
+  coefficients of \( U \) are standard and pairwise independent
+  Gaussians. Then there exists a constant \( c > 0 \) such that, for
+  \( \varepsilon \in (0,1) \),
+  \[
+    \mathbb{P}\left\{ \left| \left| f(v) \right| - \sqrt{k} \left| v
+      \right| \right| \geq \varepsilon \sqrt{k} \left| v \right|
+    \right\}  \leq 3 \exp\left(-ck \varepsilon^2\right).
+  \]
+\end{theorem}
+
+\begin{theorem}[Johnson-Lindenstrauss lemma]
+  blabla
+\end{theorem}
+
+\begin{fact}
+  Let \( X \) be a random vector and \( \Sigma = \mathbb{E}XX^T \). Then
+  \begin{itemize}
+    \item for all \( v \in \mathbb{R}^d \), \( \mathbb{E}\left\langle
+      X, v \right\rangle^2 = v^T \Sigma v \).
+    \item \( \mathbb{E}\left\|X\right\|^2 = \operatorname{tr}(\Sigma) \),
+    \item If \( Y \) is an independent copy of \( X \), then \(
+        \mathbb{E}\left\langle X, Y \right\rangle^2 =
+      \left\|\Sigma\right\|^{2}_{F} \), where \( \left\|\cdot\right\|_F \)
+      stands for the Frobenius norm.
+  \end{itemize}
+\end{fact}
+
+\section{SVD Decomposition}
+
+\begin{lemma}[Principal Component Analysis]
+  Let \( X \) be a random vector with \( \lambda_1 \geq \lambda_2
+  \geq \dots \geq \lambda_n \geq 0  \) as the eigenvalues of its
+  covariance matrix. Then
+  \[
+    \lambda_k = \max_{v \perp \left\{ v_1, \dots, v_{k-1} \right\},
+    \left\|v\right\| = 1} \operatorname{Var}(\left\langle X,
+    v \right\rangle).
+  \]
+\end{lemma}
+
+\section{Machine Learning}
+
+\subsection{Perceptron}
+
+\begin{definition}[Linear separability]
+  We say that a set of vectors \( W \subseteq \mathbb{R}^d \times
+  \left\{ -1, 1 \right\} \) is \emph{linearly separable with
+  threshhold \( \gamma \)}, if there is a vector \( v \in \mathbb{R}
+  \) such that for all \( \left( x,y \right) \in W \),
+  \[
+    \frac{y \left\langle v, x \right\rangle}{\left\|v\right\|} \geq \gamma.
+  \]
+\end{definition}
+
+\begin{remark}
+  As is widely known, \( \frac{\left| \left\langle v, x \right\rangle
+  \right|}{\left\|v\right\|} \) is the distance from \( x \) to the
+  hyperplane orthogonal to \( v \).
+\end{remark}
+
+\begin{definition}[Affine linear classificator]
+  For \( W = \left\{ (x_i, y_i) | i = 1, 2, \dots, n \right\}
+  \subseteq \mathbb{R}^d \times \left\{ -1, 1 \right\} \), an
+  \emph{affine linear classificator} is a function
+  \[
+    h: \mathbb{R}^d \rightarrow \mathbb{R},\; h(x) =
+    \operatorname{sgn}(\left\langle w, x \right\rangle + b),
+  \]
+  where \( h(x_i) = y_i \) for all \( i \).
+\end{definition}
+
+\begin{remark}
+  We will assume that \( w = \left( w_1, w_2, \dots, w_n, b \right)
+  \) and \( x = \left( x_1, x_2, \dots, x_n, 1 \right) \).
+\end{remark}
+
+\usepackage{algorithm,algorithmicx,algpseudocode}
+\begin{algorithm}
+  \floatname{algorithm}{Perceptron}
+  \algrenewcommand\algorithmicrequire{\textbf{set of points}}
+  \algrenewcommand\algorithmicensure{\textbf{classificator}}
+  \caption{The Perceptron algorithm}\label{alg:}
+  \begin{algorithmic}[1]
+    \Require $input$
+    \Ensure $output$
+
+    \State \textbf{return} $state$
+  \end{algorithmic}
+\end{algorithm}
+
+\end{document}
