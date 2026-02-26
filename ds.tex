@@ -16,13 +16,14 @@
 \title{Data Science}
 \author{Filip Rabiega}
 
-\theoremstyle{definition}
-\newtheorem{theorem}{Theorem}
-\newtheorem{definition}{Definition}
-\newtheorem{lemma}{Lemma}
-\newtheorem{fact}{Fact}
-\newtheorem{corollary}{Corollary}
-\newtheorem{remark}{Remark}
+\theoremstyle{definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{fact}{Fact}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{remark}{Remark}[section]
 
 \begin{document}
 
@@ -120,7 +121,7 @@
 
 \begin{remark}
   Hoeffding's inequality can be extended to cover many more types of
-  random variables other than just Radmacher-distributed one, for
+  random variables other than just Radmacher-distributed ones, for
   example bounded ones.
 \end{remark}
 
@@ -160,6 +161,111 @@
     \mathbb{P}\left\{ | X | \geq a \right\} \leq 3 \exp\left(-a^2 /
     12n \sigma^2 \right).
   \]
+\end{theorem}
+
+\begin{definition}[Convergence almost surely]
+  We say that a sequence of variables \( X_n \) converges almost
+  surely to \( X \) if
+  \[
+    \mathbb{P}\left\{ \omega : \lim_{n} X_{n}(\omega) =
+    X(\omega) \right\} = 0.
+  \]
+\end{definition}
+
+\begin{theorem}[Egorov]
+  Let \( X_n \) be a sequence of random variables that converges
+  almost surely to \( X \). For each \( \delta > 0 \) there is a set
+  \( A_{\delta} \) such that \( \mathbb{P}\left\{ A_{\delta} \right\}
+  < \delta \) and \( X_n \) converges to \( X \) uniformly on \( A_{\delta} \).
+\end{theorem}
+
+\begin{definition}[Convergence in probability]
+  We say that a sequence of variables \( X_n \) converges in
+  probability to \( X \) if for each \( \varepsilon > 0 \),
+  \[
+    \lim_{n \rightarrow \infty} \mathbb{P}\left\{ \left| X_n - X
+    \right| > \varepsilon \right\} = 0.
+  \]
+\end{definition}
+
+\begin{theorem}[First Borel-Cantelli lemma]
+  If \( A_{n} \) are a sequence of events such that \(
+  \sum_{n=1}^{\infty} \mathbb{P}\left\{ A_{n} \right\} < \infty \), then
+  \[
+    \mathbb{P}\left\{ \limsup_{n \rightarrow \infty} A_{n} \right\} = 0.
+  \]
+\end{theorem}
+
+\begin{theorem}[Second Borel-Cantelli lemma]
+  If \( A_{n} \) are pairwise independent events and \( \sum_{n=1}^{\infty}
+  \mathbb{P}\left\{ A_{n} \right\} = \infty \), then
+  \[
+    \mathbb{P}\left\{ \limsup_{n \rightarrow \infty} A_{n} \right\} = 1.
+  \]
+\end{theorem}
+
+\begin{lemma}
+  If \( X_n \rightarrow X \) in probability, then there is a
+  subsequence \( X_{n_{k}} \) that converges almost surely to \( X \).
+\end{lemma}
+
+\begin{lemma}
+  \( X_{n} \rightarrow X \) almost surely iff \( \sup_{k
+  \geq n} \left| X_{k} - X \right| \rightarrow 0 \) in probability.
+\end{lemma}
+
+\begin{corollary}
+  Almost sure convergence implies convergence in probability.
+\end{corollary}
+
+\begin{theorem}[Dominated Convergence Theorem]
+  Let \( X_n \) be a sequence that converges in probability to \( X
+  \). Suppose that \( \mathbb{E} \sup_{n} \left| X_{n} \right| <
+  \infty \). Then \( \mathbb{E} \left| X_{n} - X \right| \rightarrow 0\).
+\end{theorem}
+
+\begin{definition}[Convergence in \( L_{p} \)]
+  We say that \( X_{n} \) converges to \( X \) in \( L_{p} \) for \(
+  1 \leq p < \infty \) if
+  \[
+    \lim_{n} \mathbb{E} \left| X_{n} - X \right|^{p} = 0.
+  \]
+\end{definition}
+
+\begin{fact}
+  Convergence in \( L_{p} \) implies convergence in probability. On
+  the other hand, it is independent of convergence almost surely,
+  i.e. one does not imply the other in any direction.
+\end{fact}
+
+\begin{definition}[Convergence in distribution]
+  We say that a sequence \( X_{n} \) converges in distribution to \(
+  X \) if for each continuous bounded function \( f: \mathbb{R}
+  \rightarrow \mathbb{R} \), the convergence
+  \[
+    \lim_{n} \mathbb{E}f(X_{n}) = \mathbb{E}f(X)
+  \]
+  takes place.
+\end{definition}
+
+\begin{proposition}
+  A sequence \( X_{n} \) converges in distribution to \( X \) iff for
+  each continuity point of the CDF of \( X \),
+  \[
+    \lim_{n} \mathbb{P}\left\{ X_{n} \leq x \right\} =
+    \mathbb{P}\left\{ X \leq x \right\}.
+  \]
+\end{proposition}
+
+\begin{proposition}
+  If a sequence \( X_{n} \) converges in probability to \( X \), then
+  it converges in distribution to \( X \).
+\end{proposition}
+
+\begin{theorem}[Continuous Mapping Theorem]
+  If \( X_{n} \) converges in distribution to \( X \) and \( g:
+  \mathbb{R} \rightarrow \mathbb{R} \) is continuous, then \(
+  g(X_{n}) \) converges in distribution to \( g(X) \).
 \end{theorem}
 
 \section{Geometry in high-dimensional spaces}
@@ -310,6 +416,98 @@
 \end{fact}
 
 \section{SVD Decomposition}
+
+SVD decomposition is a way to project a set of points onto a small
+subspace in such a way that the sum of squares of distances from the
+original points to the projections is minimal.
+
+\begin{definition}[Singular Value Decomposition]
+  SVD is a decomposition of a matrix \( A \in M_{n \times
+  d}(\mathbb{R}) \), where we think of rows of \( A \) as points in a
+  \( d \)-dimensional space, is the factorization
+  \[
+    A = UDV^{T},
+  \]
+  where the columns of \( U, V \) are orthonormal and the matrix \( D
+  \) is diagonal with positive entries.
+\end{definition}
+
+\begin{remark}
+  In the above definition the columns of \( V \) are the vectors
+  defining the best-fitting subspace.
+\end{remark}
+
+\begin{remark}
+  The decomposition above can be rewritten as
+  \[
+    A = \sum_{i} d_{ii}u_{i}v_{i}^{T}.
+  \]
+  Here each \( u_{i}v_{i}^{T} \) is a \( n \times d \) matrix.
+\end{remark}
+
+\begin{remark}
+  If \( A \) is symmetric, then the singular values are the absolute
+  values of eigenvalues.
+\end{remark}
+
+\begin{lemma}
+  If \( A = UDV^{T} \) is the SVD, then
+  \[
+    Av_{i} = d_{ii} u_{i}, \; A^{T}u_{i} = d_{ii} v_{i}.
+  \]
+\end{lemma}
+
+\begin{remark}
+  The greedy algorithm works when calculating \( V \). Simply notice that
+  \( v_{1} = \arg\max_{\left\|v\right\| = 1} \left\|Av\right\| \) and
+  generate subsequent vectors from subspaces orthogonal to the ones
+  spanned by the already found columns of \( V \).
+  The fact that this approach works can be proven by simple induction.
+\end{remark}
+
+\begin{definition}[Singular values]
+  If \( A = UDV^{T} \), then the \( i \)-th singular value is \(
+  \sigma_i (A) = \left\|Av_{i}\right\| \).
+\end{definition}
+
+\begin{lemma}[Frobenius norm vs. singular values]
+  \[
+    \left\|A\right\|_{F} = \sqrt{\sum_{i}^{} \sigma_i (A)^{2}}.
+  \]
+\end{lemma}
+
+\begin{proof}
+  Trivial.
+\end{proof}
+
+\begin{definition}
+  \[
+    u_i = \frac{1}{\sigma_{i}(A)} Av_{i}.
+  \]
+\end{definition}
+
+\begin{remark}
+  Notice that \( \sigma_{i}(A) u_{i}v_{i}^{T} \) is a \( 1
+  \)-dimensional matrix whose rows are the \( v_{i} \)-components of \( A \).
+\end{remark}
+
+\begin{lemma}[Best rank-\( k \) approximations]
+  If \( A = \sum_{i=1}^{r} \sigma_{i}u_{i}v_{i}^{T} \) is the SVD, then
+  \[
+    A_k = \sum_{i=1}^{k} \sigma_{i} u_{i}v_{i}^{T}
+  \]
+  is the best rank-\( k \) approximation of \( A \) in the Frobenius norm.
+\end{lemma}
+
+\begin{lemma}
+  \[
+    \left\|A - A_{k}\right\|_{F}^{2} = \sigma_{k+1}^{2}.
+  \]
+\end{lemma}
+
+\begin{fact}
+  The centroid of a set of data points must pass through the best-fitting line.
+\end{fact}
 
 \begin{lemma}[Principal Component Analysis]
   Let \( X \) be a random vector with \( \lambda_1 \geq \lambda_2
