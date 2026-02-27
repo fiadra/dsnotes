@@ -16,7 +16,7 @@
 \title{Data Science}
 \author{Filip Rabiega}
 
-\theoremstyle{definition}[section]
+\theoremstyle{definition}
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{definition}{Definition}[section]
 \newtheorem{proposition}{Proposition}[section]
@@ -30,7 +30,7 @@
 \maketitle
 \section{Elementary facts}
 
-\begin{definition}[Density of a Gaussian variable]
+\begin{definition}[Normal distribution]
   If \( X \sim N(\mu, \Sigma) \), then
   \[
     f_X (x_1, \dots, x_d) =
@@ -40,520 +40,682 @@
   \]
 \end{definition}
 
-\begin{theorem}[Law of large numbers, version 1]
-  If \( \operatorname{Var}(X _{i} ) < \infty \), then
+\begin{definition}[\( \chi^{2} \) distribution]
+  If \( X_{1}, X_{2}, \dots X_{n} \) are independent, standard normal
+  variables, then the sum of their squares, \( Z = \sum_{i=1}^{n}
+  X_{i}^{2} \), is distributed according to the \( \chi^{2} \)
+  distribution with \( n \) degrees of freedom. We denote this by \(
+  Z \sim \chi^{2} (n) \). Its probability density function is
   \[
-    \mathbb{P} \left\{ | \bar{X} - \mathbb{E}X | \geq \varepsilon \right\}
-    \leq \frac{\operatorname{Var}(X)}{n\varepsilon^{2}}
-  \]
-\end{theorem}
-
-\begin{theorem}[Law of large numbers, version 2]
-  If \( \operatorname{Var}(X) < \infty  \), then
-  \[
-    \sqrt{n} \left( \bar{X} - \mathbb{E}X \right)
-    \xrightarrow{\mathcal{D} } N(0,\sigma ^{2} ).
-  \]
-\end{theorem}
-
-\begin{theorem}[Markov's inequality]
-  If \( X \) is a nonnegative random variable and \( a > 0 \), then
-  \[
-    \mathbb{P}\left\{ X \geq a \right\} \leq \frac{\mathbb{E}X}{a} .
-  \]
-\end{theorem}
-
-\begin{remark}
-  If \( X \) is an arbitrary random variable and \( a \) is an
-  arbitrary real number then \( e^{X}, a>0 \), and so
-  \[
-    \mathbb{P}\left\{ \exp(X) \geq \exp(a)  \right\} \leq
-    \frac{\mathbb{E}\exp(X) }{\exp(a) }
-  \]
-  by Markov's inequality.
-\end{remark}
-
-\begin{theorem}[Chebyshev's inequality]
-  If \( a>0 \), then
-  \[
-    \mathbb{P}\left\{ | X - \mathbb{E}X | \geq a \right\} \leq
-    \frac{\operatorname{Var}(X)}{a^2} .
-  \]
-\end{theorem}
-
-\begin{theorem}[Hoeffding's inequality]
-  Let \( X_i \) be pairwise independent Rademacher random variables
-  and set \( a \in \mathbb{R}^d \).
-  Then, for all \( t \geq 0 \),
-  \[
-    \mathbb{P}\left\{ \sum_{i=1}^{n} a_i X_i \geq t \right\} \leq
-    \exp\left(-\frac{t^2}{2 \|a\|^{2}} \right).
-  \]
-\end{theorem}
-
-\begin{proof}
-  Set \( \lambda \geq 0 \). From Markov's inequality,
-  \[ \mathbb{P}\left\{ \sum_{i=1}^{n} a_i X_i \geq t \right\} =
-    \mathbb{P}\left\{ \exp\left( \lambda \sum_{i=1}^{n} a_i X_i \right) \geq
-    \exp\left( \lambda t\right) \right\} \leq \exp\left(-\lambda t\right)
-  \mathbb{E}\exp\left(\lambda \sum_{i=1}^{n} a_i X_i\right).\]
-  Now we choose shall choose a value of \( \lambda \) that minimizes
-  the right hand site. Notice that
-  \[
-    \mathbb{E} \exp\left(\lambda \sum_{i=1}^{n} a_i X_i\right) =
-    \prod_{i=1}^{n} \mathbb{E}\exp\left(\lambda a_i X_i\right).
-  \]
-  Since \( X_i \) are all Radmacher-distributed, \( \mathbb{E}
-  \exp\left( \lambda a_i X_i \right) = \cosh(\lambda a_i) \) by
-  simple calculations.
-  Now \( \cosh(x) \leq \exp\left(x^2 / 2\right) \), so \(
-    \mathbb{E}\exp\left(\lambda a_i X_i\right) \leq \exp\left(
-  \lambda^2 a_{i}^{2} / 2\right) \).
-  Altogether
-  \[
-    \mathbb{P}\left\{ \sum_{i=1}^{n} a_i X_i \right\} \leq \exp\left(
-    -\lambda t + \frac{\lambda^2}{2} \sum_{i=1}^{n} a_i ^2\right) =
-    \exp\left(-\lambda t + \frac{\lambda^2}{2} \left\|a\right\|^2\right).
-  \]
-  The minimum is achieved for \( \lambda =
-  \frac{t}{\left\|a\right\|^2} \). Then we get the desired inequality.
-\end{proof}
-
-\begin{remark}
-  Hoeffding's inequality can be extended to cover many more types of
-  random variables other than just Radmacher-distributed ones, for
-  example bounded ones.
-\end{remark}
-
-\begin{theorem}[Chernoff's inequality]
-  Let \( X_i \) be independent Bernoulli trials with \(
-  \mathbb{P}\left\{ X_i = 1 \right\} = p_i \).
-  Let \( S_n = \sum_{i=i}^{n} X_i \) and \( \mu = \mathbb{E}S_n \).
-  Then
-  \[
-    \mathbb{P}\left\{ S_n \geq t \right\} \leq \exp(- \mu) \left(
-    \frac{e \mu}{t}  \right) ^{t}
-  \]
-  for all \( t \geq \mu  \).
-\end{theorem}
-
-\begin{proof}[Proof Chernoff's theorem]
-  Use the exact same strategy as in the proof of Hoeffding's inequality. Use
-  \( 1 + x \leq \exp\left(x\right)\).
-\end{proof}
-
-\begin{corollary}
-  For \( 0 \leq \delta \leq 1 \),
-  \[
-    \mathbb{P}\left\{ \left| S_n - \mu \right| \geq \delta \mu
-    \right\} \leq 2 \exp\left(- \frac{\delta^2 \mu}{3}\right).
-  \]
-\end{corollary}
-
-\begin{theorem}[Master Tail Bounds Theorem]
-  Let \( X = \sum_{i=1}^{n} X_i \), where \( X_i \) are pairwise
-  independent and have zero mean and variance at most \( \sigma ^{2}
-  \). Let \( 0 \leq a \leq \sqrt{2}n \sigma ^{2} \). Assume that \( |
-  \mathbb{E}X ^{s} _{i} | \leq \sigma ^{2} s! \) for \( s = 3, 4,
-  \dots , \lfloor \frac{a^2}{4n \sigma^2} \rfloor \).
-  Then
-  \[
-    \mathbb{P}\left\{ | X | \geq a \right\} \leq 3 \exp\left(-a^2 /
-    12n \sigma^2 \right).
-  \]
-\end{theorem}
-
-\begin{definition}[Convergence almost surely]
-  We say that a sequence of variables \( X_n \) converges almost
-  surely to \( X \) if
-  \[
-    \mathbb{P}\left\{ \omega : \lim_{n} X_{n}(\omega) =
-    X(\omega) \right\} = 0.
-  \]
-\end{definition}
-
-\begin{theorem}[Egorov]
-  Let \( X_n \) be a sequence of random variables that converges
-  almost surely to \( X \). For each \( \delta > 0 \) there is a set
-  \( A_{\delta} \) such that \( \mathbb{P}\left\{ A_{\delta} \right\}
-  < \delta \) and \( X_n \) converges to \( X \) uniformly on \( A_{\delta} \).
-\end{theorem}
-
-\begin{definition}[Convergence in probability]
-  We say that a sequence of variables \( X_n \) converges in
-  probability to \( X \) if for each \( \varepsilon > 0 \),
-  \[
-    \lim_{n \rightarrow \infty} \mathbb{P}\left\{ \left| X_n - X
-    \right| > \varepsilon \right\} = 0.
-  \]
-\end{definition}
-
-\begin{theorem}[First Borel-Cantelli lemma]
-  If \( A_{n} \) are a sequence of events such that \(
-  \sum_{n=1}^{\infty} \mathbb{P}\left\{ A_{n} \right\} < \infty \), then
-  \[
-    \mathbb{P}\left\{ \limsup_{n \rightarrow \infty} A_{n} \right\} = 0.
-  \]
-\end{theorem}
-
-\begin{theorem}[Second Borel-Cantelli lemma]
-  If \( A_{n} \) are pairwise independent events and \( \sum_{n=1}^{\infty}
-  \mathbb{P}\left\{ A_{n} \right\} = \infty \), then
-  \[
-    \mathbb{P}\left\{ \limsup_{n \rightarrow \infty} A_{n} \right\} = 1.
-  \]
-\end{theorem}
-
-\begin{lemma}
-  If \( X_n \rightarrow X \) in probability, then there is a
-  subsequence \( X_{n_{k}} \) that converges almost surely to \( X \).
-\end{lemma}
-
-\begin{lemma}
-  \( X_{n} \rightarrow X \) almost surely iff \( \sup_{k
-  \geq n} \left| X_{k} - X \right| \rightarrow 0 \) in probability.
-\end{lemma}
-
-\begin{corollary}
-  Almost sure convergence implies convergence in probability.
-\end{corollary}
-
-\begin{theorem}[Dominated Convergence Theorem]
-  Let \( X_n \) be a sequence that converges in probability to \( X
-  \). Suppose that \( \mathbb{E} \sup_{n} \left| X_{n} \right| <
-  \infty \). Then \( \mathbb{E} \left| X_{n} - X \right| \rightarrow 0\).
-\end{theorem}
-
-\begin{definition}[Convergence in \( L_{p} \)]
-  We say that \( X_{n} \) converges to \( X \) in \( L_{p} \) for \(
-  1 \leq p < \infty \) if
-  \[
-    \lim_{n} \mathbb{E} \left| X_{n} - X \right|^{p} = 0.
-  \]
-\end{definition}
-
-\begin{fact}
-  Convergence in \( L_{p} \) implies convergence in probability. On
-  the other hand, it is independent of convergence almost surely,
-  i.e. one does not imply the other in any direction.
-\end{fact}
-
-\begin{definition}[Convergence in distribution]
-  We say that a sequence \( X_{n} \) converges in distribution to \(
-  X \) if for each continuous bounded function \( f: \mathbb{R}
-  \rightarrow \mathbb{R} \), the convergence
-  \[
-    \lim_{n} \mathbb{E}f(X_{n}) = \mathbb{E}f(X)
-  \]
-  takes place.
-\end{definition}
-
-\begin{proposition}
-  A sequence \( X_{n} \) converges in distribution to \( X \) iff for
-  each continuity point of the CDF of \( X \),
-  \[
-    \lim_{n} \mathbb{P}\left\{ X_{n} \leq x \right\} =
-    \mathbb{P}\left\{ X \leq x \right\}.
-  \]
-\end{proposition}
-
-\begin{proposition}
-  If a sequence \( X_{n} \) converges in probability to \( X \), then
-  it converges in distribution to \( X \).
-\end{proposition}
-
-\begin{theorem}[Continuous Mapping Theorem]
-  If \( X_{n} \) converges in distribution to \( X \) and \( g:
-  \mathbb{R} \rightarrow \mathbb{R} \) is continuous, then \(
-  g(X_{n}) \) converges in distribution to \( g(X) \).
-\end{theorem}
-
-\section{Geometry in high-dimensional spaces}
-\begin{theorem}
-  The volume of a unit ball in a \( d \)-dimensional space is
-  \[
-    \text{Vol}(\mathbb{B}^d) = \frac{\pi ^{d/2} }{\frac{d}{2} \Gamma
-    (\frac{d}{2} )}.
-  \]
-\end{theorem}
-
-\begin{proof}
-  Induction with respect to \( d \).
-\end{proof}
-
-\begin{corollary}
-  For big \( d \), this volume is close to \( 0 \).
-  Also, the volume of the ball is concentrated near the boundary.
-\end{corollary}
-
-\begin{fact}
-  If \( X \sim N(0, I_d) \), then
-  \begin{gather*}
-    \mathbb{E} \|X\|^{2} = d, \\
-    \operatorname{Var}(\|X\|^2) = 2d.
-  \end{gather*}
-\end{fact}
-
-\begin{fact}
-  If \( X \sim N(0, I_d) \), then
-  \begin{gather*}
-    \left| \mathbb{E}\left( \|X\| - \sqrt{d} \right) \right| \leq 1/\sqrt{d}, \\
-    \operatorname{Var}(\|X\|) \leq 2.
-  \end{gather*}
-\end{fact}
-
-\begin{remark}
-  The facts above tell us that the Gassian variables in \(
-  \mathbb{R}^d \) are concentrated around a sphere with radius \( \sqrt{d} \).
-\end{remark}
-
-\begin{fact}
-  If \( X, Y \sim N(0, I_d) \) pairwise independent and \( \xi \in
-  \mathbb{R}^d \), then
-  \begin{gather*}
-    \mathbb{E}\langle X, Y \rangle = 0, \\
-    \operatorname{Var}(\langle X, Y \rangle) = d, \\
-    \mathbb{E}\langle X, \xi \rangle = 0, \\
-    \operatorname{Var}(\langle X, \xi \rangle) = \|\xi\|^{2}.
-  \end{gather*}
-\end{fact}
-
-\begin{theorem}[Ortogonality of Gaussian variables]
-  If \( X \sim N(0, I_d) \) and \( 0 \leq \varepsilon \), then
-  \[
-    \mathbb{P}\left\{ \left| \left\langle \frac{X}{\|X\|}, \frac{Y}{\|Y\|}
-    \right\rangle \right| \leq \varepsilon \right\} \geq 1 - \frac{2 /
-    \varepsilon + 7}{\sqrt{d}}.
-  \]
-\end{theorem}
-
-\begin{theorem}[Gaussian Annulus Theorem]
-  Let \( X \sim N(0, I_d) \) and \( \varepsilon \leq \sqrt{d} \). Then
-  \[
-    \mathbb{P}\left\{ \left| \left\|X\right\| - \sqrt{d} \right| \leq
-    \varepsilon \right\} \geq 1 - 3 \exp\left( -c \varepsilon^2\right),
-  \]
-  where \( c > 0 \) is some constant.
-\end{theorem}
-
-\begin{proof}
-  Let \( r = \left\| X \right\| \). If \( \left| r - \sqrt{d} \right|
-  \geq \varepsilon \), then \( \left| r^2 - d \right| \geq
-    \varepsilon \left( r + \sqrt{d} \right) \geq \varepsilon \sqrt{d}
-  \). So it suffices to bound the probability that \( \left| r -
-  \sqrt{d} \right| \geq \varepsilon \sqrt{d} \).
-
-  Rewrite \( r^2 - d = (X_{1}^{2} - 1) + \dots + (X_{d}^{2} - 1)\)
-  and set \( Y_i = X_{i}^{2} - 1 \). We want to bound the probability
-  that \( \left| \sum_{i=1}^{d} Y_i \right| \geq \varepsilon \sqrt{d}
-  \). Notice that \( \mathbb{E} Y_i = 0\). To apply the master
-  theorem we have to bound the moments of \( Y_i \). But that is
-  simple calculus; in the end we get \( \left| \mathbb{E} Y^{s}
-  \right| \leq 2^{s}s! \).
-  Variance of \( Y_i \) is still to high, so we set \( Z_i = Y_i / 2
-  \), then \( \operatorname{Var}(Z_i) \leq 2 \) and \( \left|
-  \mathbb{E}Z_{i}^{s} \right| \leq 2s! \). Now we can apply the
-  Master theorem for \( \sigma^2 = 2 \) and \( n = d \), which yields
-  the result.
-\end{proof}
-
-\begin{theorem}[Random Projection Theorem]
-  Set \( v \in \mathbb{R}^d \) and let \( f(v) = Uv \), where \( U
-  \in M_{n \times k}(\mathbb{R}) \) the coefficients of \( U \) are
-  standard and pairwise independent Gaussians. Then there exists a
-  constant \( c > 0 \) such that, for \( \varepsilon \in (0,1) \),
-  \[
-    \mathbb{P}\left\{ \left| \left\| f(v) \right\| - \sqrt{k} \left\| v
-      \right\| \right| \geq \varepsilon \sqrt{k} \left\| v \right\|
-    \right\}  \leq 3 \exp\left(-ck \varepsilon^2\right).
-  \]
-\end{theorem}
-
-\begin{proof}
-  By scaling the inner inequality by \( \left\| v \right\| \), we can
-  assume that \( \left\| v \right\| = 1 \). Since the sum of normal
-  variables is normal, \( \left\langle u_i, v \right\rangle \) is
-  Gaussian with zero mean and variance equal to
-  \[
-    \operatorname{Var}(\left\langle u_i, v \right\rangle) =
-    \sum_{j=1}^{d} v_{j}^{2} u_{ij} = \sum_{j=1}^{d} v_{j}^{2} = 1.
-  \]
-  Since \( \left\langle u_{i}, v \right\rangle \) for \( i=1, \dots k \) are
-  independent, Gaussian and have unit variance, the desired property
-  follows from the Gaussian Annulus Theorem.
-\end{proof}
-
-\begin{theorem}[Johnson-Lindenstrauss Lemma]
-  For any \( 0 < \varepsilon < 1 \) and any positive integer \( n \),
-  let \( k \geq \frac{3}{c \varepsilon^2} \log n \) with \( c \) as
-  in the Gaussian Annulus Theorem. For any set of \( n \) points in
-  \( \mathbb{R}^d \), the random projection \( f(v) = Uv \), where
-  \( U \) is as before, has the property that for all \( v_{i}, v_{j} \),
-  \[
-    \mathbb{P}\left\{ (1-\varepsilon) \sqrt{k} \left\|v_{i} -
-      v_{j}\right\| \leq \left\| f(v_{i}) - f(v_{j})\right\| \leq
-    (1+\varepsilon) \sqrt{k} \left\|v_{i} - v_{j}\right\| \right\} \geq 1- 3/2n.
-  \]
-\end{theorem}
-
-\begin{proof}
-  Simply use the previous result with an union bound with \(
-  \binom{n}{2} < n^{2}/2 \).
-\end{proof}
-
-\begin{fact}
-  Let \( X \) be a random vector and let \( \Sigma = \mathbb{E}XX^T
-  \) be its covariance matrix. Then
-  \begin{itemize}
-    \item for all \( v \in \mathbb{R}^d \), \( \mathbb{E}\left\langle
-      X, v \right\rangle^2 = v^T \Sigma v \).
-    \item \( \mathbb{E}\left\|X\right\|^2 = \operatorname{tr}(\Sigma) \),
-    \item If \( Y \) is an independent copy of \( X \), then \(
-        \mathbb{E}\left\langle X, Y \right\rangle^2 =
-      \left\|\Sigma\right\|^{2}_{F} \), where \( \left\|\cdot\right\|_F \)
-      stands for the Frobenius norm.
-  \end{itemize}
-\end{fact}
-
-\section{SVD Decomposition}
-
-SVD decomposition is a way to project a set of points onto a small
-subspace in such a way that the sum of squares of distances from the
-original points to the projections is minimal.
-
-\begin{definition}[Singular Value Decomposition]
-  SVD is a decomposition of a matrix \( A \in M_{n \times
-  d}(\mathbb{R}) \), where we think of rows of \( A \) as points in a
-  \( d \)-dimensional space, is the factorization
-  \[
-    A = UDV^{T},
-  \]
-  where the columns of \( U, V \) are orthonormal and the matrix \( D
-  \) is diagonal with positive entries.
-\end{definition}
-
-\begin{remark}
-  In the above definition the columns of \( V \) are the vectors
-  defining the best-fitting subspace.
-\end{remark}
-
-\begin{remark}
-  The decomposition above can be rewritten as
-  \[
-    A = \sum_{i} d_{ii}u_{i}v_{i}^{T}.
-  \]
-  Here each \( u_{i}v_{i}^{T} \) is a \( n \times d \) matrix.
-\end{remark}
-
-\begin{remark}
-  If \( A \) is symmetric, then the singular values are the absolute
-  values of eigenvalues.
-\end{remark}
-
-\begin{lemma}
-  If \( A = UDV^{T} \) is the SVD, then
-  \[
-    Av_{i} = d_{ii} u_{i}, \; A^{T}u_{i} = d_{ii} v_{i}.
-  \]
-\end{lemma}
-
-\begin{remark}
-  The greedy algorithm works when calculating \( V \). Simply notice that
-  \( v_{1} = \arg\max_{\left\|v\right\| = 1} \left\|Av\right\| \) and
-  generate subsequent vectors from subspaces orthogonal to the ones
-  spanned by the already found columns of \( V \).
-  The fact that this approach works can be proven by simple induction.
-\end{remark}
-
-\begin{definition}[Singular values]
-  If \( A = UDV^{T} \), then the \( i \)-th singular value is \(
-  \sigma_i (A) = \left\|Av_{i}\right\| \).
-\end{definition}
-
-\begin{lemma}[Frobenius norm vs. singular values]
-  \[
-    \left\|A\right\|_{F} = \sqrt{\sum_{i}^{} \sigma_i (A)^{2}}.
-  \]
-\end{lemma}
-
-\begin{proof}
-  Trivial.
-\end{proof}
-
-\begin{definition}
-  \[
-    u_i = \frac{1}{\sigma_{i}(A)} Av_{i}.
-  \]
-\end{definition}
-
-\begin{remark}
-  Notice that \( \sigma_{i}(A) u_{i}v_{i}^{T} \) is a \( 1
-  \)-dimensional matrix whose rows are the \( v_{i} \)-components of \( A \).
-\end{remark}
-
-\begin{lemma}[Best rank-\( k \) approximations]
-  If \( A = \sum_{i=1}^{r} \sigma_{i}u_{i}v_{i}^{T} \) is the SVD, then
-  \[
-    A_k = \sum_{i=1}^{k} \sigma_{i} u_{i}v_{i}^{T}
-  \]
-  is the best rank-\( k \) approximation of \( A \) in the Frobenius norm.
-\end{lemma}
-
-\begin{lemma}
-  \[
-    \left\|A - A_{k}\right\|_{F}^{2} = \sigma_{k+1}^{2}.
-  \]
-\end{lemma}
-
-\begin{fact}
-  The centroid of a set of data points must pass through the best-fitting line.
-\end{fact}
-
-\begin{lemma}[Principal Component Analysis]
-  Let \( X \) be a random vector with \( \lambda_1 \geq \lambda_2
-  \geq \dots \geq \lambda_n \geq 0  \) as the eigenvalues of its
-  covariance matrix. Then
-  \[
-    \lambda_k = \max_{v \perp \left\{ v_1, \dots, v_{k-1} \right\},
-    \left\|v\right\| = 1} \operatorname{Var}(\left\langle X,
-    v \right\rangle).
-  \]
-\end{lemma}
-
-\section{Machine Learning}
-
-\subsection{Perceptron}
-
-\begin{definition}[Linear separability]
-  We say that a set of vectors \( W \subseteq \mathbb{R}^d \times
-  \left\{ -1, 1 \right\} \) is \emph{linearly separable with
-  threshhold \( \gamma \)}, if there is a vector \( v \in \mathbb{R}
-  \) such that for all \( \left( x,y \right) \in W \),
-  \[
-    \frac{y \left\langle v, x \right\rangle}{\left\|v\right\|} \geq \gamma.
-  \]
-\end{definition}
-
-\begin{remark}
-  As is widely known, \( \frac{\left| \left\langle v, x \right\rangle
-  \right|}{\left\|v\right\|} \) is the distance from \( x \) to the
-  hyperplane orthogonal to \( v \).
-\end{remark}
-
-\begin{definition}[Affine linear classificator]
-  For \( W = \left\{ (x_i, y_i) \; : \; i = 1, 2, \dots, n \right\}
-  \subseteq \mathbb{R}^d \times \left\{ -1, 1 \right\} \), an
-  \emph{affine linear classificator} is a function
-  \[
-    h: \mathbb{R}^d \rightarrow \mathbb{R},\; h(x) =
-    \operatorname{sgn}(\left\langle w, x \right\rangle + b),
-  \]
-  where \( h(x_i) = y_i \) for all \( i \).
-\end{definition}
-
-\begin{remark}
-  We will assume that \( w = \left( w_1, w_2, \dots, w_n, b \right)
-  \) and \( x = \left( x_1, x_2, \dots, x_n, 1 \right) \).
-\end{remark}
-
-\end{document}
+    \varphi(t) =
+    \left\{
+      \begin{align}
+        \frac{t^{\frac{n}{2}-1}e^{-\frac{n}{2}}}{2^{\frac{n}{2}}\Gamma(\frac{n}{2})}
+        & \quad \text{if } t > 0, \\
+        0 & \quad \text{else}.
+      \end{align}
+      \right.
+    \]
+  \end{definition}
+
+  \begin{theorem}[Law of large numbers, version 1]
+    If \( \operatorname{Var}(X _{i} ) < \infty \), then
+    \[
+      \mathbb{P} \left\{ | \bar{X} - \mathbb{E}X | \geq \varepsilon \right\}
+      \leq \frac{\operatorname{Var}(X)}{n\varepsilon^{2}}
+    \]
+  \end{theorem}
+
+  \begin{theorem}[Law of large numbers, version 2]
+    If \( \operatorname{Var}(X) < \infty  \), then
+    \[
+      \sqrt{n} \left( \bar{X} - \mathbb{E}X \right)
+      \xrightarrow{\mathcal{D} } N(0,\sigma ^{2} ).
+    \]
+  \end{theorem}
+
+  \subsection{Key inequalities}
+
+  \begin{theorem}[Markov's inequality]
+    If \( X \) is a nonnegative random variable and \( a > 0 \), then
+    \[
+      \mathbb{P}\left\{ X \geq a \right\} \leq \frac{\mathbb{E}X}{a} .
+    \]
+  \end{theorem}
+
+  \begin{remark}
+    If \( X \) is an arbitrary random variable and \( a \) is an
+    arbitrary real number then \( e^{X}, a>0 \), and so
+    \[
+      \mathbb{P}\left\{ \exp(X) \geq \exp(a)  \right\} \leq
+      \frac{\mathbb{E}\exp(X) }{\exp(a) }
+    \]
+    by Markov's inequality.
+  \end{remark}
+
+  \begin{theorem}[Chebyshev's inequality]
+    If \( a>0 \), then
+    \[
+      \mathbb{P}\left\{ | X - \mathbb{E}X | \geq a \right\} \leq
+      \frac{\operatorname{Var}(X)}{a^2} .
+    \]
+  \end{theorem}
+
+  \begin{theorem}[Jensen's inequality]
+    Let \( \varphi: \mathbb{R} \rightarrow \mathbb{R} \) be convex. Then
+    \[
+      \varphi(\mathbb{E}X) \leq \mathbb{E}\varphi(X)
+    \]
+    for any random variable \( X \).
+  \end{theorem}
+
+  \begin{corollary}
+    The function \( \varphi(x) = x^{p/q} \) is convex for \( p \geq q
+    \geq 0 \), so
+    \[
+      \left\| X \right\|_{L^q} \leq \left\| X \right\|_{L^p}.
+    \]
+  \end{corollary}
+
+  \begin{theorem}[Hoelder's inequality]
+    For \( p,q \geq 1 \) such that \( \frac{p+q}{pq} = 1 \), the
+    following holds:
+    \[
+      \left| \mathbb{E}XY \right| \leq \left\| X \right\|_{L^p} \left\|
+      Y \right\|_{L^q}.
+    \]
+  \end{theorem}
+
+  \begin{corollary}[Cauchy-Schwartz inequality]
+    If \( X, Y \) are any random variables, then
+    \[
+      \left| \mathbb{E}XY \right| \leq \sqrt{\mathbb{E}X^{2} \mathbb{E}Y^{2}}.
+    \]
+  \end{corollary}
+
+  \begin{proposition}
+    If \( X \) is a nonnegative random variable, then
+    \[
+      \mathbb{E}X = \int_{0}^{\infty} \mathbb{P}\left\{ X > t \right\}dt.
+    \]
+  \end{proposition}
+
+  \begin{proof}
+    Fubini's theorem.
+  \end{proof}
+
+  \begin{proposition}[Gaussian tail bounds]
+    If \( X \sim N(\mu, \sigma^{2}) \), then
+    \[
+      \mathbb{P}\left\{ X \geq \mu + t \right\} \leq e^{-t^{2} / \sigma^{2}}.
+    \]
+  \end{proposition}
+
+  \begin{corollary}
+    If \( X \sim N(0, \sigma^{2}) \), then
+    \[
+      \mathbb{P}\left\{ \left| X \right| \geq t \right\} \leq 2
+      e^{-t^{2} / \sigma^{2}}.
+    \]
+  \end{corollary}
+
+  \begin{definition}[Sub-Gaussian variables]
+    A random variable \( X \) is sub-Gaussian if, for \( \mu =
+    \mathbb{E}X \) and some \( K^{2} > 0 \),
+    \[
+      \mathbb{E}e^{\lambda(X - \mu)} \leq e^{K^{2} \lambda^{2} / 2}
+    \]
+    for all \( \lambda \in \mathbb{R} \).
+  \end{definition}
+
+  \begin{proposition}
+    Assume that \( X \) is sub-Gaussian with parameter \( K^{2}
+    \). Then for all \( t > 0 \),
+    \[
+      \mathbb{P}\left\{ \left| X - \mu \right| \geq t \right\} \leq
+      2e^{-t^{2} / 2 K^{2}}.
+    \]
+  \end{proposition}
+
+  \begin{theorem}[Hoeffding's inequality]
+    Let \( X_i \) be pairwise independent Rademacher random variables
+    and set \( a \in \mathbb{R}^d \).
+    Then, for all \( t \geq 0 \),
+    \[
+      \mathbb{P}\left\{ \sum_{i=1}^{n} a_i X_i \geq t \right\} \leq
+      \exp\left(-\frac{t^2}{2 \|a\|^{2}} \right).
+    \]
+  \end{theorem}
+
+  \begin{proof}
+    Set \( \lambda \geq 0 \). From Markov's inequality,
+    \[ \mathbb{P}\left\{ \sum_{i=1}^{n} a_i X_i \geq t \right\} =
+      \mathbb{P}\left\{ \exp\left( \lambda \sum_{i=1}^{n} a_i X_i \right) \geq
+      \exp\left( \lambda t\right) \right\} \leq \exp\left(-\lambda t\right)
+    \mathbb{E}\exp\left(\lambda \sum_{i=1}^{n} a_i X_i\right).\]
+    Now we shall choose a value of \( \lambda \) that minimizes
+    the right hand side. Notice that
+    \[
+      \mathbb{E} \exp\left(\lambda \sum_{i=1}^{n} a_i X_i\right) =
+      \prod_{i=1}^{n} \mathbb{E}\exp\left(\lambda a_i X_i\right).
+    \]
+    Since \( X_i \) are all Radmacher-distributed, \( \mathbb{E}
+    \exp\left( \lambda a_i X_i \right) = \cosh(\lambda a_i) \) by
+    simple calculations.
+    Now \( \cosh(x) \leq \exp\left(x^2 / 2\right) \), so \(
+      \mathbb{E}\exp\left(\lambda a_i X_i\right) \leq \exp\left(
+    \lambda^2 a_{i}^{2} / 2\right) \).
+    Altogether
+    \[
+      \mathbb{P}\left\{ \sum_{i=1}^{n} a_i X_i \right\} \leq \exp\left(
+      -\lambda t + \frac{\lambda^2}{2} \sum_{i=1}^{n} a_i ^2\right) =
+      \exp\left(-\lambda t + \frac{\lambda^2}{2} \left\|a\right\|^2\right).
+    \]
+    The minimum is achieved for \( \lambda =
+    \frac{t}{\left\|a\right\|^2} \). Then we get the desired inequality.
+  \end{proof}
+
+  \begin{remark}
+    Hoeffding's inequality can be extended to cover many more types of
+    random variables other than just Radmacher-distributed ones, for
+    example bounded random variables.
+  \end{remark}
+
+  \begin{theorem}[Bernstein's inequality]
+    Let \( X_1, \dots X_n \) be independent centered random variables
+    satisfying \( \left| X_i \right| \leq a \) and \( \mathbb{E}
+    X_{i}^{2} = \sigma^{2} \). Then
+    \[
+      \mathbb{P}\left\{ \left| \sum_{i=1}^{n} X_i \right| \geq t
+      \right\} \leq 2 \exp\left( - \frac{t^{2}}{2n \sigma^2 +
+      \frac{2}{3}at}\right).
+    \]
+  \end{theorem}
+
+  \begin{theorem}[Chernoff's inequality]
+    Let \( X_i \) be independent Bernoulli trials with \(
+    \mathbb{P}\left\{ X_i = 1 \right\} = p_i \).
+    Let \( S_n = \sum_{i=i}^{n} X_i \) and \( \mu = \mathbb{E}S_n \).
+    Then
+    \[
+      \mathbb{P}\left\{ S_n \geq t \right\} \leq \exp(- \mu) \left(
+      \frac{e \mu}{t}  \right) ^{t}
+    \]
+    for all \( t \geq \mu  \).
+  \end{theorem}
+
+  \begin{proof}
+    Use the exact same strategy as in the proof of Hoeffding's inequality. Use
+    \( 1 + x \leq \exp\left(x\right)\).
+  \end{proof}
+
+  \begin{corollary}
+    For \( 0 \leq \delta \leq 1 \),
+    \[
+      \mathbb{P}\left\{ \left| S_n - \mu \right| \geq \delta \mu
+      \right\} \leq 2 \exp\left(- \frac{\delta^2 \mu}{3}\right).
+    \]
+  \end{corollary}
+
+  \begin{proposition}
+    If \( Z = \sum_{i=1}^{n} X_{i}^{2} \sim \chi^{2}(n) \), then
+    \[
+      \mathbb{P}\left\{ \left| \frac{1}{n} \sum_{i=1}^{n} X_{i}^{2} -
+      1 \right| \ge t \right\}
+      \le
+      \begin{cases}
+        2e^{-nt^{2}/8} & \text{if } t \in (0,1), \\
+        2e^{-nt/8} & \text{if } t \ge 1,
+      \end{cases}
+    \]
+  \end{proposition}
+
+  \begin{theorem}[Master Tail Bounds Theorem]
+    Let \( X = \sum_{i=1}^{n} X_i \), where \( X_i \) are pairwise
+    independent and have zero mean and variance at most \( \sigma ^{2}
+    \). Let \( 0 \leq a \leq \sqrt{2}n \sigma ^{2} \). Assume that \( |
+    \mathbb{E}X ^{s} _{i} | \leq \sigma ^{2} s! \) for \( s = 3, 4,
+    \dots , \lfloor \frac{a^2}{4n \sigma^2} \rfloor \).
+    Then
+    \[
+      \mathbb{P}\left\{ | X | \geq a \right\} \leq 3 \exp\left(-a^2 /
+      12n \sigma^2 \right).
+    \]
+  \end{theorem}
+
+  \subsection{Types of convergence}
+
+  \begin{definition}[Convergence almost surely]
+    We say that a sequence of variables \( X_n \) converges almost
+    surely to \( X \) if
+    \[
+      \mathbb{P}\left\{ \omega : \lim_{n} X_{n}(\omega) =
+      X(\omega) \right\} = 0.
+    \]
+  \end{definition}
+
+  \begin{theorem}[Egorov]
+    Let \( X_n \) be a sequence of random variables that converges
+    almost surely to \( X \). For each \( \delta > 0 \) there is a set
+    \( A_{\delta} \) such that \( \mathbb{P}\left\{ A_{\delta} \right\}
+    < \delta \) and \( X_n \) converges to \( X \) uniformly on \(
+    A_{\delta} \).
+  \end{theorem}
+
+  \begin{definition}[Convergence in probability]
+    We say that a sequence of variables \( X_n \) converges in
+    probability to \( X \) if for each \( \varepsilon > 0 \),
+    \[
+      \lim_{n \rightarrow \infty} \mathbb{P}\left\{ \left| X_n - X
+      \right| > \varepsilon \right\} = 0.
+    \]
+  \end{definition}
+
+  \begin{theorem}[First Borel-Cantelli lemma]
+    If \( A_{n} \) are a sequence of events such that \(
+    \sum_{n=1}^{\infty} \mathbb{P}\left\{ A_{n} \right\} < \infty \), then
+    \[
+      \mathbb{P}\left\{ \limsup_{n \rightarrow \infty} A_{n} \right\} = 0.
+    \]
+  \end{theorem}
+
+  \begin{theorem}[Second Borel-Cantelli lemma]
+    If \( A_{n} \) are pairwise independent events and \( \sum_{n=1}^{\infty}
+    \mathbb{P}\left\{ A_{n} \right\} = \infty \), then
+    \[
+      \mathbb{P}\left\{ \limsup_{n \rightarrow \infty} A_{n} \right\} = 1.
+    \]
+  \end{theorem}
+
+  \begin{lemma}
+    If \( X_n \rightarrow X \) in probability, then there is a
+    subsequence \( X_{n_{k}} \) that converges almost surely to \( X \).
+  \end{lemma}
+
+  \begin{lemma}
+    \( X_{n} \rightarrow X \) almost surely iff \( \sup_{k
+    \geq n} \left| X_{k} - X \right| \rightarrow 0 \) in probability.
+  \end{lemma}
+
+  \begin{corollary}
+    Almost sure convergence implies convergence in probability.
+  \end{corollary}
+
+  \begin{theorem}[Dominated Convergence Theorem]
+    Let \( X_n \) be a sequence that converges in probability to \( X
+    \). Suppose that \( \mathbb{E} \sup_{n} \left| X_{n} \right| <
+    \infty \). Then \( \mathbb{E} \left| X_{n} - X \right| \rightarrow 0\).
+  \end{theorem}
+
+  \begin{definition}[Convergence in \( L_{p} \)]
+    We say that \( X_{n} \) converges to \( X \) in \( L_{p} \) for \(
+    1 \leq p < \infty \) if
+    \[
+      \lim_{n} \mathbb{E} \left| X_{n} - X \right|^{p} = 0.
+    \]
+  \end{definition}
+
+  \begin{fact}
+    Convergence in \( L_{p} \) implies convergence in probability. On
+    the other hand, it is independent of convergence almost surely,
+    i.e. one does not imply the other in any direction.
+  \end{fact}
+
+  \begin{definition}[Convergence in distribution]
+    We say that a sequence \( X_{n} \) converges in distribution to \(
+    X \) if for each continuous bounded function \( f: \mathbb{R}
+    \rightarrow \mathbb{R} \), the convergence
+    \[
+      \lim_{n} \mathbb{E}f(X_{n}) = \mathbb{E}f(X)
+    \]
+    takes place.
+  \end{definition}
+
+  \begin{proposition}
+    A sequence \( X_{n} \) converges in distribution to \( X \) iff for
+    each continuity point of the CDF of \( X \),
+    \[
+      \lim_{n} \mathbb{P}\left\{ X_{n} \leq x \right\} =
+      \mathbb{P}\left\{ X \leq x \right\}.
+    \]
+  \end{proposition}
+
+  \begin{proposition}
+    If a sequence \( X_{n} \) converges in probability to \( X \), then
+    it converges in distribution to \( X \).
+  \end{proposition}
+
+  \begin{theorem}[Continuous Mapping Theorem]
+    If \( X_{n} \) converges in distribution to \( X \) and \( g:
+    \mathbb{R} \rightarrow \mathbb{R} \) is continuous, then \(
+    g(X_{n}) \) converges in distribution to \( g(X) \).
+  \end{theorem}
+
+  \section{Geometry in high-dimensional spaces}
+  \begin{theorem}
+    The volume of a unit ball in a \( d \)-dimensional space is
+    \[
+      \text{Vol}(\mathbb{B}^d) = \frac{\pi ^{d/2} }{\frac{d}{2} \Gamma
+      (\frac{d}{2} )}.
+    \]
+  \end{theorem}
+
+  \begin{proof}
+    Induction with respect to \( d \).
+  \end{proof}
+
+  \begin{corollary}
+    For big \( d \), this volume is close to \( 0 \).
+    Also, the volume of the ball is concentrated near the boundary.
+  \end{corollary}
+
+  \begin{fact}
+    If \( X \sim N(0, I_d) \), then
+    \[
+      \begin{aligned}
+        \mathbb{E} \|X\|^{2} &= d, \\
+        \operatorname{Var}(\|X\|^2) &= 2d.
+      \end{aligned}
+    \]
+  \end{fact}
+
+  \begin{fact}
+    If \( X \sim N(0, I_d) \), then
+    \[
+      \begin{aligned}
+        \left| \mathbb{E}\left( \|X\| - \sqrt{d} \right) \right|
+        &\leq 1/\sqrt{d}, \\
+        \operatorname{Var}(\|X\|) &\leq 2.
+      \end{aligned}
+    \]
+  \end{fact}
+
+  \begin{remark}
+    The facts above tell us that the Gassian variables in \(
+    \mathbb{R}^d \) are concentrated around a sphere with radius \(
+    \sqrt{d} \).
+  \end{remark}
+
+  \begin{fact}
+    If \( X, Y \sim N(0, I_d) \) pairwise independent and \( \xi \in
+    \mathbb{R}^d \), then
+    \[
+      \begin{align}
+        \mathbb{E}\langle X, Y \rangle &= 0, \\
+        \operatorname{Var}(\langle X, Y \rangle) &= d, \\
+        \mathbb{E}\langle X, \xi \rangle &= 0, \\
+        \operatorname{Var}(\langle X, \xi \rangle) &= \|\xi\|^{2}.
+      \end{align}
+    \]
+  \end{fact}
+
+  \begin{theorem}[Ortogonality of Gaussian variables]
+    If \( X \sim N(0, I_d) \) and \( 0 \leq \varepsilon \), then
+    \[
+      \mathbb{P}\left\{ \left| \left\langle \frac{X}{\|X\|}, \frac{Y}{\|Y\|}
+      \right\rangle \right| \leq \varepsilon \right\} \geq 1 - \frac{2 /
+      \varepsilon + 7}{\sqrt{d}}.
+    \]
+  \end{theorem}
+
+  \begin{theorem}[Gaussian Annulus Theorem]
+    Let \( X \sim N(0, I_d) \) and \( \varepsilon \leq \sqrt{d} \). Then
+    \[
+      \mathbb{P}\left\{ \left| \left\|X\right\| - \sqrt{d} \right| \leq
+      \varepsilon \right\} \geq 1 - 3 \exp\left( -c \varepsilon^2\right),
+    \]
+    where \( c > 0 \) is some constant.
+  \end{theorem}
+
+  \begin{proof}
+    Let \( r = \left\| X \right\| \). If \( \left| r - \sqrt{d} \right|
+    \geq \varepsilon \), then \( \left| r^2 - d \right| \geq
+      \varepsilon \left( r + \sqrt{d} \right) \geq \varepsilon \sqrt{d}
+    \). So it suffices to bound the probability that \( \left| r -
+    \sqrt{d} \right| \geq \varepsilon \sqrt{d} \).
+
+    Rewrite \( r^2 - d = (X_{1}^{2} - 1) + \dots + (X_{d}^{2} - 1)\)
+    and set \( Y_i = X_{i}^{2} - 1 \). We want to bound the probability
+    that \( \left| \sum_{i=1}^{d} Y_i \right| \geq \varepsilon \sqrt{d}
+    \). Notice that \( \mathbb{E} Y_i = 0\). To apply the master
+    theorem we have to bound the moments of \( Y_i \). But that is
+    simple calculus; in the end we get \( \left| \mathbb{E} Y^{s}
+    \right| \leq 2^{s}s! \).
+    Variance of \( Y_i \) is still to high, so we set \( Z_i = Y_i / 2
+    \), then \( \operatorname{Var}(Z_i) \leq 2 \) and \( \left|
+    \mathbb{E}Z_{i}^{s} \right| \leq 2s! \). Now we can apply the
+    Master theorem for \( \sigma^2 = 2 \) and \( n = d \), which yields
+    the result.
+  \end{proof}
+
+  \begin{theorem}[Random Projection Theorem]
+    Set \( v \in \mathbb{R}^d \) and let \( f(v) = Uv \), where \( U
+    \in M_{n \times k}(\mathbb{R}) \) the coefficients of \( U \) are
+    standard and pairwise independent Gaussians. Then there exists a
+    constant \( c > 0 \) such that, for \( \varepsilon \in (0,1) \),
+    \[
+      \mathbb{P}\left\{ \left| \left\| f(v) \right\| - \sqrt{k} \left\| v
+        \right\| \right| \geq \varepsilon \sqrt{k} \left\| v \right\|
+      \right\}  \leq 3 \exp\left(-ck \varepsilon^2\right).
+    \]
+  \end{theorem}
+
+  \begin{proof}
+    By scaling the inner inequality by \( \left\| v \right\| \), we can
+    assume that \( \left\| v \right\| = 1 \). Since the sum of normal
+    variables is normal, \( \left\langle u_i, v \right\rangle \) is
+    Gaussian with zero mean and variance equal to
+    \[
+      \operatorname{Var}(\left\langle u_i, v \right\rangle) =
+      \sum_{j=1}^{d} v_{j}^{2} u_{ij} = \sum_{j=1}^{d} v_{j}^{2} = 1.
+    \]
+    Since \( \left\langle u_{i}, v \right\rangle \) for \( i=1, \dots k \) are
+    independent, Gaussian and have unit variance, the desired property
+    follows from the Gaussian Annulus Theorem.
+  \end{proof}
+
+  \begin{theorem}[Johnson-Lindenstrauss Lemma]
+    For any \( 0 < \varepsilon < 1 \) and any positive integer \( n \),
+    let \( k \geq \frac{3}{c \varepsilon^2} \log n \) with \( c \) as
+    in the Gaussian Annulus Theorem. For any set of \( n \) points in
+    \( \mathbb{R}^d \), the random projection \( f(v) = Uv \), where
+    \( U \) is as before, has the property that for all \( v_{i}, v_{j} \),
+    \[
+      \mathbb{P}\left\{ (1-\varepsilon) \sqrt{k} \left\|v_{i} -
+        v_{j}\right\| \leq \left\| f(v_{i}) - f(v_{j})\right\| \leq
+      (1+\varepsilon) \sqrt{k} \left\|v_{i} - v_{j}\right\| \right\}
+      \geq 1- 3/2n.
+    \]
+  \end{theorem}
+
+  \begin{proof}
+    Simply use the previous result with an union bound with \(
+    \binom{n}{2} < n^{2}/2 \).
+  \end{proof}
+
+  \begin{fact}
+    Let \( X \) be a random vector and let \( \Sigma = \mathbb{E}XX^T
+    \) be its covariance matrix. Then
+    \begin{itemize}
+      \item for all \( v \in \mathbb{R}^d \), \( \mathbb{E}\left\langle
+        X, v \right\rangle^2 = v^T \Sigma v \).
+      \item \( \mathbb{E}\left\|X\right\|^2 = \operatorname{tr}(\Sigma) \),
+      \item If \( Y \) is an independent copy of \( X \), then \(
+          \mathbb{E}\left\langle X, Y \right\rangle^2 =
+        \left\|\Sigma\right\|^{2}_{F} \), where \( \left\|\cdot\right\|_F \)
+        stands for the Frobenius norm.
+    \end{itemize}
+  \end{fact}
+
+  \section{SVD Decomposition}
+
+  SVD decomposition is a way to project a set of points onto a small
+  subspace in such a way that the sum of squares of distances from the
+  original points to the projections is minimal.
+
+  \begin{definition}[Singular Value Decomposition]
+    SVD is a decomposition of a matrix \( A \in M_{n \times
+    d}(\mathbb{R}) \), where we think of rows of \( A \) as points in
+    a \( d \)-dimensional space, is the factorization
+    \[
+      A = U \Sigma V^{T},
+    \]
+    where the columns of \( U, V \) are orthonormal and the matrix \(
+    \Sigma \) is diagonal with positive entries.
+  \end{definition}
+
+  \begin{remark}
+    In the above definition the columns of \( V \) are the vectors
+    defining the best-fitting subspace.
+  \end{remark}
+
+  \begin{remark}
+    If \( \operatorname{rank}(A) = r \), the decomposition above can
+    be rewritten as
+    \[
+      A = \sum_{i}^{r} \sigma_{i}u_{i}v_{i}^{T},
+    \]
+    where \( \sigma_{i} > 0 \) for each \( 1 \leq i \leq r\).
+    Here each \( u_{i}v_{i}^{T} \) is a \( n \times d \) matrix of rank \( 1 \).
+  \end{remark}
+
+  \begin{remark}
+    If \( A \) is symmetric, then the singular values are the absolute
+    values of eigenvalues.
+  \end{remark}
+
+  \begin{lemma}
+    If \( A = U \Sigma V^{T} \) is the SVD, then
+    \[
+      Av_{i} = \sigma_{i} u_{i}, \; A^{T}u_{i} = \sigma_{i} v_{i}.
+    \]
+  \end{lemma}
+
+  \begin{remark}
+    The greedy algorithm works when calculating \( V \). Simply notice that
+    \( v_{1} = \arg\max_{\left\|v\right\| = 1} \left\|Av\right\| \) and
+    generate subsequent vectors from subspaces orthogonal to the ones
+    spanned by the already found columns of \( V \).
+    The fact that this approach works can be proven by simple induction.
+  \end{remark}
+
+  \begin{remark}
+    If \( A = U \Sigma V^{T} \), then the \( i \)-th singular value is \(
+    \sigma_i (A) = \left\|Av_{i}\right\| \).
+  \end{remark}
+
+  \begin{lemma}[Frobenius norm vs. singular values]
+    \[
+      \left\|A\right\|_{F} = \sqrt{\sum_{i}^{} \sigma_i (A)^{2}}.
+    \]
+  \end{lemma}
+
+  \begin{proof}
+    \[
+      \left\| A \right\|^{2}_{F} = \sum_{i,j} a_{ij}^{2} =
+      \operatorname{tr}(A^{T}A) = \operatorname{tr}(V \Sigma^{T} U^{T}
+      U \Sigma V^{T}) = \operatorname{tr}(\Sigma^{T} \Sigma) =
+      \sum_{i=1}^{r} \sigma_{i}^{2}.
+    \]
+  \end{proof}
+
+  \begin{definition}
+    \[
+      u_i = \frac{1}{\sigma_{i}(A)} Av_{i}.
+    \]
+  \end{definition}
+
+  \begin{remark}
+    Notice that \( \sigma_{i} u_{i}v_{i}^{T} \) is a \( 1
+    \)-dimensional matrix whose rows are the \( v_{i} \)-components
+    of \( A \).
+  \end{remark}
+
+  \begin{remark}
+    \[
+      \left\| Ax \right\|^{2} = \sum_{i=1}^{r} \sigma_{i}^{2}
+      \left\langle v_{i}, x \right\rangle^{2} \leq \sigma_{1}^{2}
+      \sum_{i=1}^{r} \left\langle v_{i}, x \right\rangle^{2} \leq
+      \sigma_{1}^{2} \sum_{i=1}^{n} \left\langle v_{i}, x
+      \right\rangle^{2} \leq \sigma_{1}^{2} \left\| x \right\|^{2}.
+    \]
+  \end{remark}
+
+  \begin{corollary}
+    \[
+      \left\| A \right\|_{2} = \sigma_{1},
+    \]
+    where \( \left\| A \right\|_{2} = \sup_{\left\| x \right\| = 1}
+    \left\| Ax \right\| \) by selecting \( x = v_{1}\).
+  \end{corollary}
+
+  \begin{lemma}[Best rank-\( k \) approximations]
+    If \( A = \sum_{i=1}^{r} \sigma_{i}u_{i}v_{i}^{T} \) is the SVD, then
+    \[
+      A_k = \sum_{i=1}^{k} \sigma_{i} u_{i}v_{i}^{T}
+    \]
+    is the best rank-\( k \) approximation of \( A \) in the Frobenius norm.
+  \end{lemma}
+
+  \begin{lemma}
+    \[
+      \begin{aligned}
+        \left\|A - A_{k}\right\|_{2}^{2} &= \sigma_{k+1}^{2}, \\
+        \left\|A - A_{k}\right\|_{F}^{2} &= \sum_{i=k+1}^{r} \sigma_{i}^{2}. \\
+      \end{aligned}
+    \]
+  \end{lemma}
+
+  \begin{fact}
+    The centroid of a set of data points must pass through the
+    best-fitting line.
+  \end{fact}
+
+  \begin{lemma}[Principal Component Analysis]
+    Let \( X \) be a random vector with \( \lambda_1 \geq \lambda_2
+    \geq \dots \geq \lambda_n \geq 0  \) as the eigenvalues of its
+    covariance matrix. Then
+    \[
+      \lambda_k = \max_{v \perp \left\{ v_1, \dots, v_{k-1} \right\},
+      \left\|v\right\| = 1} \operatorname{Var}(\left\langle X,
+      v \right\rangle).
+    \]
+  \end{lemma}
+
+  \section{Machine Learning}
+
+  \subsection{Perceptron}
+
+  \begin{definition}[Linear separability]
+    We say that a set of vectors \( W \subseteq \mathbb{R}^d \times
+    \left\{ -1, 1 \right\} \) is \emph{linearly separable with
+    threshhold \( \gamma \)}, if there is a vector \( v \in \mathbb{R}
+    \) such that for all \( \left( x,y \right) \in W \),
+    \[
+      \frac{y \left\langle v, x \right\rangle}{\left\|v\right\|} \geq \gamma.
+    \]
+  \end{definition}
+
+  \begin{remark}
+    As is widely known, \( \frac{\left| \left\langle v, x \right\rangle
+    \right|}{\left\|v\right\|} \) is the distance from \( x \) to the
+    hyperplane orthogonal to \( v \).
+  \end{remark}
+
+  \begin{definition}[Affine linear classificator]
+    For \( W = \left\{ (x_i, y_i) \; : \; i = 1, 2, \dots, n \right\}
+    \subseteq \mathbb{R}^d \times \left\{ -1, 1 \right\} \), an
+    \emph{affine linear classificator} is a function
+    \[
+      h: \mathbb{R}^d \rightarrow \mathbb{R},\; h(x) =
+      \operatorname{sgn}(\left\langle w, x \right\rangle + b),
+    \]
+    where \( h(x_i) = y_i \) for all \( i \).
+  \end{definition}
+
+  \begin{remark}
+    We will assume that \( w = \left( w_1, w_2, \dots, w_n, b \right)
+    \) and \( x = \left( x_1, x_2, \dots, x_n, 1 \right) \).
+  \end{remark}
+
+  \end{document}
